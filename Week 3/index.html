@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Country Info App</title>
+    <style>
+        .modal {
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            background: #ffffff;
+            transition: background 0.3s ease-in-out;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 8px;
+        }
+        .dark body {
+            background: #1f2937;
+        }
+        
+        #ageModal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            display: none;
+        }
+        #ageModal .modal {
+            background: #ffffff;
+            padding: 24px;
+            border-radius: 10px;
+            border: none;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            max-width: 320px;
+            width: calc(100% - 10px);
+        }
+        .dark #ageModal .modal {
+            background: #374151;
+            color: #ffffff;
+        }
+        #ageModal h2 {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 16px;
+            color: #1f2937;
+        }
+        .dark #ageModal h2 {
+            color: #ffffff;
+        }
+        #ageModal p {
+            margin-bottom: 16px;
+            color: #4b5563;
+        }
+        .dark #ageModal p {
+            color: #d1d5db;
+        }
+        #ageModal input {
+            width: 95%;
+            padding: 8px;
+            margin-bottom: 16px;
+            border: 1px solid #d1d5db;
+            border-radius: 4px;
+            background: #ffffff;
+            color: #000000;
+            
+        }
+        .dark #ageModal input {
+            background: #4b5563;
+            color: #ffffff;
+        }
+        #ageModal input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 2px #3b82f6;
+        }
+        #ageModal button {
+            width: 100%;
+            background: #3b82f6;
+            color: #ffffff;
+            padding: 8px;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+            transition: background 0.3s ease-in-out;
+        }
+        #ageModal button:hover {
+            background: #2563eb;
+        }
+        #mainContent {
+            max-width: 448px;
+            width: calc(100% - 10px);
+            display: none;
+        }
+        #mainContent > div {
+            background: #ffffff;
+            padding: 24px;
+            border-radius: 10px;
+            border: none;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        .dark #mainContent > div {
+            background: #374151;
+        }
+        #mainContent h1 {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 16px;
+            color: #1f2937;
+        }
+        .dark #mainContent h1 {
+            color: #ffffff;
+        }
+        .info-box {
+            padding: 16px;
+            margin-bottom: 16px;
+            border: 1px solid #d1d5db;
+            border-radius: 4px;
+            background: #f9fafb;
+        }
+        .dark .info-box {
+            background: #4b5563;
+            color: #ffffff;
+        }
+        .info-box p {
+            margin-bottom: 8px;
+            font-size: 1rem;
+        }
+        .info-box p:last-child {
+            margin-bottom: 0;
+        }
+        .info-box strong {
+            font-weight: bold;
+        }
+        .info-box .error-message {
+            color: #dc2626;
+            font-size: 0.9rem;
+            margin-top: 8px;
+        }
+        .dob-section {
+            margin-bottom: 24px;
+        }
+        .dob-section h2 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #1f2937;
+        }
+        .dark .dob-section h2 {
+            color: #ffffff;
+        }
+        .dob-section .flex-container {
+            display: flex;
+            gap: 8px;
+        }
+        .dob-section select {
+            padding: 8px;
+            border: 1px solid #d1d5db;
+            border-radius: 4px;
+            background: #ffffff;
+            color: #000000;
+            flex: 1;
+        }
+        .dark .dob-section select {
+            background: #4b5563;
+            color: #ffffff;
+        }
+        .dob-section select:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 2px #3b82f6;
+        }
+        .dob-section button {
+            margin-top: 12px;
+            width: 100%;
+            background: #3b82f6;
+            color: #ffffff;
+            padding: 8px;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+            transition: background 0.3s ease-in-out;
+        }
+        .dob-section button:hover {
+            background: #2563eb;
+        }
+        .country-section {
+            margin-bottom: 24px;
+        }
+        .country-section h2 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #1f2937;
+        }
+        .dark .country-section h2 {
+            color: #ffffff;
+        }
+        .country-section select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #d1d5db;
+            border-radius: 4px;
+            background: #ffffff;
+            color: #000000;
+            cursor: pointer;
+        }
+        .dark .country-section select {
+            background: #4b5563;
+            color: #ffffff;
+        }
+        .country-section select:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 2px #3b82f6;
+        }
+        .country-section .country-info {
+            margin-top: 12px;
+            display: flex;
+            align-items: center;
+        }
+        .country-section img {
+            height: 40px;
+            width: 64px;
+            object-fit: cover;
+            margin-right: 12px;
+            display: none;
+            border: 1px solid #d1d5db;
+            border-radius: 4px;
+        }
+        .country-section p {
+            color: #4b5563;
+        }
+        .dark .country-section p {
+            color: #d1d5db;
+        }
+        .error-message {
+            color: #dc2626;
+            font-size: 0.9rem;
+            margin-top: 8px;
+            display: none;
+        }
+        .button-container {
+            display: flex;
+            gap: 12px;
+        }
+        .button-container button {
+            flex: 1;
+            background: #6b7280;
+            color: #ffffff;
+            padding: 8px;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+            transition: background 0.3s ease-in-out;
+        }
+        .button-container button:hover {
+            background: #4b5563;
+        }
+        .button-container button.reset {
+            background: #ef4444;
+        }
+        .button-container button.reset:hover {
+            background: #dc2626;
+        }
+        @media (max-width: 640px) {
+            .info-box p {
+                font-size: 0.85rem;
+            }
+            #ageModal .modal {
+                padding: 16px;
+                max-width: calc(100% - 10px);
+            }
+            .dob-section select, .country-section select {
+                font-size: 0.9rem;
+                padding: 6px;
+            }
+            .button-container {
+                flex-direction: column;
+                gap: 8px;
+            }
+            .button-container button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="ageModal" class="modal">
+        <div class="modal">
+            <h2>Age Verification</h2>
+            <p>Please enter your age to access the application.</p>
+            <input type="number" id="ageInput" placeholder="Enter your age" min="0">
+            <button onclick="App.verifyAge()">Submit</button>
+        </div>
+    </div>
+    <div id="mainContent">
+        <div>
+            <h1>User Information</h1>
+            <div class="info-box">
+                <p><strong>IP Address:</strong> <span id="userIP">Loading...</span></p>
+                <p><strong>Country:</strong> <span id="userCountry">Loading...</span></p>
+                <p><strong>Age:</strong> <span id="userAge">Not calculated</span></p>
+                <p id="ipError" class="error-message"></p>
+            </div>
+            <div class="dob-section">
+                <h2>Select Date of Birth</h2>
+                <div class="flex-container">
+                    <select id="dobDay"></select>
+                    <select id="dobMonth"></select>
+                    <select id="dobYear"></select>
+                </div>
+                <p id="dobError" class="error-message"></p>
+                <button onclick="App.calculateAge()">Calculate Age</button>
+            </div>
+            <div class="country-section">
+                <h2>Select Country</h2>
+                <select id="countrySelect"></select>
+                <p id="countryError" class="error-message"></p>
+                <div class="country-info">
+                    <img id="countryFlag" alt="Country Flag">
+                    <p id="countryFact" aria-live="polite"></p>
+                </div>
+            </div>
+            <div class="button-container">
+                <button onclick="App.toggleTheme()" aria-label="Toggle between light and dark theme">Toggle Theme</button>
+                <button onclick="App.resetApp()" class="reset">Reset</button>
+            </div>
+        </div>
+    </div>
+    <script>
+        const App = {
+            countries: [],
+            async fetchWithRetry(url, options = {}, retries = 3, delay = 1000) {
+                for (let i = 0; i < retries; i++) {
+                    try {
+                        const response = await fetch(url, {
+                            mode: 'cors',
+                            headers: {
+                                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+                                'Accept': 'application/json',
+                                ...options.headers
+                            },
+                            ...options
+                        });
+                        if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
+                        const text = await response.text();
+                        if (!text.startsWith('{') && !text.startsWith('[')) {
+                            throw new Error(`Invalid JSON response: ${text.substring(0, 50)}...`);
+                        }
+                        return JSON.parse(text);
+                    } catch (error) {
+                        console.warn(`Fetch attempt ${i + 1} failed for ${url}: ${error.message}`);
+                        if (i === retries - 1) throw error;
+                        await new Promise(resolve => setTimeout(resolve, delay * Math.pow(2, i)));
+                    }
+                }
+            },
+            async getCountryNameFromCode(code) {
+                try {
+                    if (this.countries.length > 0) {
+                        const country = this.countries.find(c => c.iso2 === code);
+                        return country ? country.name : 'Unknown';
+                    }
+                    const data = await this.fetchWithRetry(`https://restcountries.com/v3.1/alpha/${code}?fields=name`);
+                    return data.name.common || 'Unknown';
+                } catch (error) {
+                    console.warn(`Failed to fetch country name for code ${code}: ${error.message}`);
+                    return 'Unknown';
+                }
+            },
+            async fetchIPData() {
+                const ipError = document.getElementById('ipError');
+                const cachedIP = localStorage.getItem('userIP');
+                const cachedCountry = localStorage.getItem('userCountry');
+                const cacheTimestamp = localStorage.getItem('ipDataTimestamp');
+                const cacheExpiry = 24 * 60 * 60 * 1000; // 1 day
+                if (cachedIP && cachedCountry && cacheTimestamp && (Date.now() - cacheTimestamp < cacheExpiry)) {
+                    document.getElementById('userIP').textContent = cachedIP;
+                    document.getElementById('userCountry').textContent = cachedCountry;
+                    ipError.style.display = 'none';
+                    return;
+                }
+                try {
+                    const data = await this.fetchWithRetry('https://ipinfo.io/json?token=19b01b68c14bf7');
+                    const ip = data.ip || 'Unknown';
+                    const countryCode = data.country || 'Unknown';
+                    if (ip !== 'Unknown' && countryCode !== 'Unknown') {
+                        const countryName = await this.getCountryNameFromCode(countryCode);
+                        document.getElementById('userIP').textContent = ip;
+                        document.getElementById('userCountry').textContent = countryName;
+                        localStorage.setItem('userIP', ip);
+                        localStorage.setItem('userCountry', countryName);
+                        localStorage.setItem('ipDataTimestamp', Date.now());
+                        ipError.style.display = 'none';
+                    } else {
+                        throw new Error('Invalid IP or country data');
+                    }
+                } catch (error) {
+                    console.warn(`ipinfo.io failed: ${error.message}`);
+                    document.getElementById('userIP').textContent = 'Unknown IP';
+                    document.getElementById('userCountry').textContent = 'Pakistan';
+                    ipError.textContent = `Failed to fetch IP data: ${error.message}. Check network or disable VPN.`;
+                    ipError.style.display = 'block';
+                    alert('Failed to fetch IP data. Using fallback: Pakistan.');
+                }
+            },
+            init() {
+                document.addEventListener('DOMContentLoaded', () => {
+                    this.showAgeModal();
+                    this.fetchIPData();
+                    this.populateDOBDropdowns();
+                    this.populateCountries();
+                    this.loadSavedData();
+                });
+            },
+            showAgeModal() {
+                document.getElementById('ageModal').style.display = 'flex';
+                document.getElementById('ageInput').focus();
+            },
+            verifyAge() {
+                const age = parseInt(document.getElementById('ageInput').value);
+                if (isNaN(age) || age < 0) {
+                    alert('Please enter a valid age');
+                    return;
+                }
+                if (age < 18) {
+                    alert('Access restricted: You must be 18 or older.');
+                    window.location.href = 'https://www.example.com/restricted';
+                    return;
+                }
+                localStorage.setItem('modalAge', age);
+                localStorage.setItem('userAge', 'Not calculated');
+                document.getElementById('ageModal').style.display = 'none';
+                document.getElementById('mainContent').style.display = 'block';
+            },
+            populateDOBDropdowns() {
+                const daySelect = document.getElementById('dobDay');
+                const monthSelect = document.getElementById('dobMonth');
+                const yearSelect = document.getElementById('dobYear');
+                daySelect.innerHTML = '<option value="">Day</option>';
+                for (let i = 1; i <= 31; i++) {
+                    daySelect.innerHTML += `<option value="${i}">${i}</option>`;
+                }
+                const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+                monthSelect.innerHTML = '<option value="">Month</option>';
+                months.forEach((month, index) => {
+                    monthSelect.innerHTML += `<option value="${index + 1}">${month}</option>`;
+                });
+                const currentYear = new Date().getFullYear();
+                yearSelect.innerHTML = '<option value="">Year</option>';
+                for (let i = currentYear; i >= currentYear - 100; i--) {
+                    yearSelect.innerHTML += `<option value="${i}">${i}</option>`;
+                }
+            },
+            calculateAge() {
+                const day = document.getElementById('dobDay').value;
+                const month = document.getElementById('dobMonth').value;
+                const year = document.getElementById('dobYear').value;
+                const errorMessage = document.getElementById('dobError');
+                errorMessage.textContent = '';
+                errorMessage.style.display = 'none';
+
+                if (!day || !month || !year) {
+                    errorMessage.textContent = 'Please select a valid date of birth';
+                    errorMessage.style.display = 'block';
+                    return;
+                }
+
+                const dob = new Date(year, month - 1, day);
+                if (isNaN(dob.getTime()) || dob.getFullYear() != year || dob.getMonth() + 1 != month || dob.getDate() != day) {
+                    errorMessage.textContent = 'Invalid date of birth';
+                    errorMessage.style.display = 'block';
+                    return;
+                }
+
+                const now = new Date();
+                if (dob > now) {
+                    errorMessage.textContent = 'Date of birth cannot be in the future';
+                    errorMessage.style.display = 'block';
+                    return;
+                }
+
+                let years = now.getFullYear() - dob.getFullYear();
+                let months = now.getMonth() - dob.getMonth();
+                let days = now.getDate() - dob.getDate();
+                if (days < 0) {
+                    months--;
+                    days += new Date(now.getFullYear(), now.getMonth(), 0).getDate();
+                }
+                if (months < 0) {
+                    years--;
+                    months += 12;
+                }
+
+                const modalAge = parseInt(localStorage.getItem('modalAge')) || 0;
+                if (years < 18 || years !== modalAge) {
+                    alert('Access denied: Age does not match or is under 18.');
+                    window.location.href = 'https://www.example.com/restricted';
+                    return;
+                }
+
+                const ageText = `${years} years, ${months} months, ${days} days`;
+                document.getElementById('userAge').textContent = ageText;
+                localStorage.setItem('dobDay', day);
+                localStorage.setItem('dobMonth', month);
+                localStorage.setItem('dobYear', year);
+                localStorage.setItem('userAge', ageText);
+            },
+            async populateCountries() {
+                const select = document.getElementById('countrySelect');
+                const errorMessage = document.getElementById('countryError');
+                try {
+                    const data = await this.fetchWithRetry('https://restcountries.com/v3.1/all?fields=name,cca2,capital,population,flags');
+                    this.countries = data.map(country => ({
+                        iso2: country.cca2 || 'N/A',
+                        name: country.name.common || 'Unknown',
+                        capital: Array.isArray(country.capital) ? country.capital[0] || 'N/A' : country.capital || 'N/A',
+                        population: country.population || 0,
+                        flag: country.flags.png || ''
+                    })).filter(country => country.iso2 !== 'N/A');
+                    this.countries.sort((a, b) => a.name.localeCompare(b.name));
+                    localStorage.setItem('countries', JSON.stringify(this.countries));
+                    localStorage.setItem('countriesTimestamp', Date.now());
+                    errorMessage.style.display = 'none';
+                    select.innerHTML = '<option value="">Select a country</option>';
+                    this.countries.forEach(country => {
+                        select.innerHTML += `<option value="${country.iso2}">${country.name}</option>`;
+                    });
+                    this.setupCountrySelect();
+                } catch (error) {
+                    console.error(`Failed to fetch countries: ${error.message}`);
+                    errorMessage.textContent = `Failed to load countries: ${error.message}. Please try again later.`;
+                    errorMessage.style.display = 'block';
+                    alert('Failed to load country data. Please try again later.');
+                    select.innerHTML = '<option value="">Select a country</option>';
+                    this.setupCountrySelect();
+                }
+            },
+            setupCountrySelect() {
+                const select = document.getElementById('countrySelect');
+                select.addEventListener('click', () => {
+                    select.focus();
+                });
+                select.addEventListener('change', () => {
+                    const code = select.value;
+                    const country = this.countries.find(c => c.iso2 === code);
+                    const flagImg = document.getElementById('countryFlag');
+                    const factText = document.getElementById('countryFact');
+                    if (country && code !== '') {
+                        flagImg.src = country.flag;
+                        flagImg.onerror = () => {
+                            console.warn(`Flag failed to load for ${code}`);
+                            flagImg.src = '';
+                            flagImg.style.display = 'none';
+                        };
+                        flagImg.style.display = 'block';
+                        const capital = country.capital || 'N/A';
+                        const population = country.population ? country.population.toLocaleString() : 'N/A';
+                        factText.textContent = `Capital: ${capital}, Population: ${population}`;
+                        console.log(`Country info: ${country.name}, ${factText.textContent}`);
+                        localStorage.setItem('selectedCountry', code);
+                        localStorage.setItem('selectedCountryName', country.name);
+                        localStorage.setItem('countryFact', factText.textContent);
+                        localStorage.setItem('countryFlag', country.flag);
+                    } else {
+                        flagImg.style.display = 'none';
+                        factText.textContent = '';
+                        localStorage.removeItem('selectedCountry');
+                        localStorage.removeItem('selectedCountryName');
+                        localStorage.removeItem('countryFact');
+                        localStorage.removeItem('countryFlag');
+                    }
+                });
+            },
+            loadSavedData() {
+                if (localStorage.getItem('modalAge')) {
+                    document.getElementById('ageModal').style.display = 'none';
+                    document.getElementById('mainContent').style.display = 'block';
+                }
+                if (localStorage.getItem('userIP')) {
+                    document.getElementById('userIP').textContent = localStorage.getItem('userIP');
+                }
+                if (localStorage.getItem('userCountry')) {
+                    document.getElementById('userCountry').textContent = localStorage.getItem('userCountry');
+                }
+                if (localStorage.getItem('userAge')) {
+                    document.getElementById('userAge').textContent = localStorage.getItem('userAge');
+                }
+                if (localStorage.getItem('dobDay')) {
+                    document.getElementById('dobDay').value = localStorage.getItem('dobDay');
+                }
+                if (localStorage.getItem('dobMonth')) {
+                    document.getElementById('dobMonth').value = localStorage.getItem('dobMonth');
+                }
+                if (localStorage.getItem('dobYear')) {
+                    document.getElementById('dobYear').value = localStorage.getItem('dobYear');
+                }
+                if (localStorage.getItem('selectedCountry')) {
+                    document.getElementById('countrySelect').value = localStorage.getItem('selectedCountry');
+                    document.getElementById('countryFlag').src = localStorage.getItem('countryFlag') || '';
+                    document.getElementById('countryFlag').style.display = localStorage.getItem('countryFlag') ? 'block' : 'none';
+                    document.getElementById('countryFact').textContent = localStorage.getItem('countryFact') || '';
+                }
+                if (localStorage.getItem('theme') === 'dark') {
+                    document.body.classList.add('dark');
+                }
+            },
+            toggleTheme() {
+                document.body.classList.toggle('dark');
+                localStorage.setItem('theme', document.body.classList.contains('dark') ? 'dark' : 'light');
+            },
+            resetApp() {
+                localStorage.removeItem('modalAge');
+                localStorage.removeItem('userAge');
+                localStorage.removeItem('dobDay');
+                localStorage.removeItem('dobMonth');
+                localStorage.removeItem('dobYear');
+                localStorage.removeItem('userIP');
+                localStorage.removeItem('userCountry');
+                localStorage.removeItem('ipDataTimestamp');
+                localStorage.removeItem('countries');
+                localStorage.removeItem('countriesTimestamp');
+                localStorage.removeItem('selectedCountry');
+                localStorage.removeItem('selectedCountryName');
+                localStorage.removeItem('countryFact');
+                localStorage.removeItem('countryFlag');
+                localStorage.removeItem('theme');
+                location.reload();
+            }
+        };
+        App.init();
+    </script>
+</body>
+</html>
