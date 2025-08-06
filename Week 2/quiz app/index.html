@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multiple Choice Quiz</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-image: url('https://img.freepik.com/free-psd/3d-rendering-questions-background_23-2151455632.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+        }
+        #start-page {
+            background: linear-gradient(135deg, #6e8efb, #a777e3);
+            padding: 40px;
+            border-radius: 10px;
+            color: #fff;
+            margin-bottom: 20px;
+        }
+        #start-page h1, #start-page p {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 10px;
+            border-radius: 5px;
+        }
+        #start-page button {
+            background-color: #ff6f61;
+            transition: background-color 0.3s;
+        }
+        #start-page button:hover {
+            background-color: #e55a50;
+        }
+        #quiz-page {
+            background: linear-gradient(135deg, #a1c4fd, #c2e9fb);
+            padding: 20px;
+            border-radius: 10px;
+            color: #333;
+        }
+        #result-page {
+            background: linear-gradient(135deg, #d4a5ff, #b8c6ff); /* Light purple-blue gradient for result page */
+            padding: 20px;
+            border-radius: 10px;
+            color: #333;
+        }
+        #result-page h1, #result-page p {
+            background: rgba(255, 255, 255, 0.8); /* Semi-transparent white for text readability */
+            padding: 8px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+        #result-page button {
+            background-color: #ff6f61; /* Coral button to match start page */
+            transition: background-color 0.3s;
+        }
+        #result-page button:hover {
+            background-color: #e55a50;
+        }
+        .hidden {
+            display: none;
+        }
+        .question {
+            font-size: 1.2em;
+            margin-bottom: 20px;
+        }
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .option {
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            background: #fff;
+        }
+        .option:hover {
+            background-color: #f0f0f0;
+        }
+        .option.correct {
+            background-color: #d4edda;
+            border-color: #28a745;
+        }
+        .option.wrong {
+            background-color: #f8d7da;
+            border-color: #dc3545;
+        }
+        .option.disabled {
+            pointer-events: none;
+            opacity: 0.6;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 1em;
+            margin-top: 20px;
+            cursor: pointer;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #timer {
+            font-size: 1.1em;
+            margin-bottom: 10px;
+            color: #333;
+        }
+        #score {
+            font-size: 1em;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="start-page">
+            <h1>Welcome to the Quiz!</h1>
+            <p>Test your knowledge with 5 questions.</p>
+            <p>You have 60 seconds to complete the quiz.</p>
+            <button onclick="startQuiz()">Start Quiz</button>
+        </div>
+        <div id="quiz-page" class="hidden">
+            <div id="timer">Time Left: 60s</div>
+            <div id="score">Score: 0</div>
+            <div id="question" class="question"></div>
+            <div id="options" class="options"></div>
+            <button id="next-btn" onclick="nextQuestion()" class="hidden">Next</button>
+        </div>
+        <div id="result-page" class="hidden">
+            <h1>Quiz Completed!</h1>
+            <p id="final-score"></p>
+            <p id="percentage"></p>
+            <p id="time-taken"></p>
+            <button onclick="restartQuiz()">Try Again</button>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                question: "What is the capital of France?",
+                options: ["Paris", "London", "Berlin", "Madrid"],
+                answer: "Paris"
+            },
+            {
+                question: "Which planet is known as the Red Planet?",
+                options: ["Mars", "Jupiter", "Venus", "Mercury"],
+                answer: "Mars"
+            },
+            {
+                question: "What is 2 + 2?",
+                options: ["3", "4", "5", "6"],
+                answer: "4"
+            },
+            {
+                question: "Which element has the chemical symbol 'O'?",
+                options: ["Oxygen", "Gold", "Iron", "Silver"],
+                answer: "Oxygen"
+            },
+            {
+                question: "Who wrote 'Romeo and Juliet'?",
+                options: ["William Shakespeare", "Jane Austen", "Charles Dickens", "Mark Twain"],
+                answer: "William Shakespeare"
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let timeLeft = 60;
+        let timer;
+        let startTime;
+        let shuffledQuestions = [];
+
+        function startQuiz() {
+            document.getElementById('start-page').classList.add('hidden');
+            document.getElementById('quiz-page').classList.remove('hidden');
+            shuffledQuestions = questions.sort(() => Math.random() - 0.5);
+            startTime = Date.now();
+            startTimer();
+            showQuestion();
+        }
+
+        function startTimer() {
+            timer = setInterval(() => {
+                timeLeft--;
+                document.getElementById('timer').textContent = `Time Left: ${timeLeft}s`;
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    endQuiz();
+                }
+            }, 1000);
+        }
+
+        function showQuestion() {
+            const question = shuffledQuestions[currentQuestionIndex];
+            document.getElementById('question').textContent = question.question;
+            const optionsDiv = document.getElementById('options');
+            optionsDiv.innerHTML = '';
+            question.options.forEach(option => {
+                const optionElement = document.createElement('div');
+                optionElement.classList.add('option');
+                optionElement.textContent = option;
+                optionElement.onclick = () => selectOption(option, question.answer);
+                optionsDiv.appendChild(optionElement);
+            });
+            document.getElementById('next-btn').classList.add('hidden');
+            document.getElementById('score').textContent = `Score: ${score}`;
+        }
+
+        function selectOption(selected, correct) {
+            const options = document.querySelectorAll('.option');
+            options.forEach(option => {
+                option.classList.add('disabled');
+                if (option.textContent === correct) {
+                    option.classList.add('correct');
+                }
+                if (option.textContent === selected && selected !== correct) {
+                    option.classList.add('wrong');
+                }
+            });
+            if (selected === correct) {
+                score++;
+                document.getElementById('score').textContent = `Score: ${score}`;
+            }
+            document.getElementById('next-btn').classList.remove('hidden');
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < shuffledQuestions.length) {
+                showQuestion();
+            } else {
+                endQuiz();
+            }
+        }
+
+        function endQuiz() {
+            clearInterval(timer);
+            const timeTaken = Math.round((Date.now() - startTime) / 1000);
+            document.getElementById('quiz-page').classList.add('hidden');
+            document.getElementById('result-page').classList.remove('hidden');
+            document.getElementById('final-score').textContent = `Correct Answers: ${score}/${shuffledQuestions.length}`;
+            document.getElementById('percentage').textContent = `Percentage: ${(score / shuffledQuestions.length * 100).toFixed(2)}%`;
+            document.getElementById('time-taken').textContent = `Time Taken: ${timeTaken}s`;
+        }
+
+        function restartQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            timeLeft = 60;
+            document.getElementById('result-page').classList.add('hidden');
+            document.getElementById('start-page').classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
