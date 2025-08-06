@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Makeup E-Commerce App</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f5f5f5;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    /* Brand Name */
+    .brand {
+      text-align: center;
+      padding: 20px 0;
+      background-color: #fff;
+    }
+    .brand h1 {
+      font-size: 36px;
+      color: #e91e63;
+      font-family: 'Dancing Script', cursive;
+      margin: 0;
+    }
+    .brand h1::after {
+      content: "💄";
+      margin-left: 5px;
+    }
+    /* Navigation Header */
+    .nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #fff;
+      padding: 10px 20px;
+      border-bottom: 1px solid #ddd;
+    }
+    .nav ul {
+      list-style: none;
+      display: flex;
+      margin: 0;
+      padding: 0;
+    }
+    .nav ul li {
+      margin-right: 20px;
+    }
+    .nav ul li a {
+      text-decoration: none;
+      color: #333;
+      font-weight: bold;
+    }
+    .nav input[type="text"] {
+      padding: 5px;
+      width: 200px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+    }
+    .nav .buttons {
+      display: flex;
+      align-items: center;
+    }
+    .nav .button {
+      margin-left: 10px;
+    }
+    /* Promotional Section */
+    .promo {
+      position: relative;
+      height: 450px;
+      background: url('pic.png.png') no-repeat center/cover;
+      margin: 0 0 80px 0;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      text-align: right;
+      color: #333;
+    }
+    .promo .promo-content {
+      position: absolute;
+      bottom: 20px;
+      right: 20px;
+      background-color: rgba(255, 255, 255, 0.8);
+      padding: 10px;
+      border-radius: 5px;
+    }
+    .promo .price {
+      font-size: 18px;
+      font-weight: bold;
+      margin: 0;
+    }
+    .promo .discount {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background-color: #e91e63;
+      color: white;
+      padding: 10px;
+      border-radius: 50%;
+      font-size: 18px;
+    }
+    /* Product Grid */
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+    .product-card {
+      background-color: white;
+      border: 1px solid #ddd;
+      padding: 15px;
+      border-radius: 5px;
+      text-align: center;
+    }
+    .product-card img {
+      width: 100%;
+      height: 150px;
+      object-fit: cover;
+      margin-bottom: 10px;
+    }
+    /* Modal */
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(0, 0, 0, 0.5);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+    .modal.active {
+      display: flex;
+    }
+    .modal-content {
+      background-color: white;
+      padding: 20px;
+      border-radius: 5px;
+      max-width: 500px;
+      width: 100%;
+    }
+    .modal-content img {
+      width: 100%;
+      height: auto; /* Changed to auto for full image display */
+      max-height: 300px; /* Added max-height to prevent overflow */
+      object-fit: contain; /* Changed to contain to show full image */
+      margin-bottom: 10px;
+      transition: opacity 0.3s ease;
+    }
+    .modal-content img.loading {
+      opacity: 0.5;
+    }
+    .modal-content select, .modal-content input {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+    }
+    /* Admin Panel */
+    .admin-panel {
+      display: none;
+    }
+    .admin-panel.active {
+      display: block;
+    }
+    .admin-panel input {
+      padding: 8px;
+      margin: 5px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      width: calc(25% - 10px);
+    }
+    .admin-panel .product-list div {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .admin-panel .button-group {
+      display: flex;
+      gap: 5px;
+      width: 200px;
+      justify-content: flex-end;
+    }
+    /* Cart */
+    .cart-item {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+    .total {
+      font-weight: bold;
+      margin-top: 10px;
+    }
+    #shop-section {
+      display: block;
+    }
+    #shop-section.hidden {
+      display: none;
+    }
+    /* Button Styles */
+    .button {
+      padding: 8px 16px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    .button-primary {
+      background-color: #e91e63;
+      color: white;
+    }
+    .button-secondary {
+      background-color: #f06292;
+      color: white;
+    }
+    .button-green {
+      background-color: #e91e63;
+      color: white;
+    }
+    .button-danger {
+      background-color: #ff80ab;
+      color: white;
+    }
+    .button-update {
+      background-color: #2196f3;
+      color: white;
+    }
+    /* Footer */
+    footer {
+      background-color: #ec5789;
+      color: white;
+      padding: 20px 0;
+      margin-top: 40px;
+      text-align: center;
+      height: 100px;
+    }
+    footer ul {
+      list-style: none;
+      padding: 0;
+      margin: 0 0 15px 0;
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+    }
+    footer ul li a {
+      color: white;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    footer ul li a:hover {
+      text-decoration: underline;
+    }
+    footer p {
+      margin: 0;
+      font-size: 14px;
+    }
+    /* Media Queries for Mobile (430x932) */
+    @media (max-width: 430px) {
+      .container {
+        padding: 10px;
+      }
+      .brand h1 {
+        font-size: 28px;
+      }
+      .nav {
+        flex-direction: column;
+        align-items: center;
+        padding: 10px;
+      }
+      .nav ul {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        width: 100%;
+        margin: 10px 0;
+        order: 1;
+      }
+      .nav ul li {
+        margin: 5px 10px;
+      }
+      .nav ul li a {
+        font-size: 14px;
+      }
+      .nav input[type="text"] {
+        width: 80%;
+        margin: 10px 0;
+        order: 2;
+        text-align: center;
+      }
+      .nav .buttons {
+        width: 100%;
+        justify-content: center;
+        gap: 10px;
+        order: 3;
+      }
+      .nav .button {
+        margin-left: 0;
+        font-size: 12px;
+        padding: 6px 12px;
+      }
+      .promo {
+        height: 300px;
+        margin-bottom: 40px;
+        background-size: cover;
+        background-position: center;
+      }
+      .promo .discount {
+        font-size: 14px;
+        padding: 8px;
+        top: 10px;
+        right: 10px;
+      }
+      .promo .promo-content {
+        bottom: 10px;
+        right: 10px;
+        padding: 8px;
+      }
+      .promo .price {
+        font-size: 14px;
+      }
+      .product-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+      }
+      .product-card {
+        padding: 8px;
+      }
+      .product-card img {
+        height: 100px;
+      }
+      .product-card h3 {
+        font-size: 14px;
+        margin: 5px 0;
+      }
+      .product-card p {
+        font-size: 12px;
+        margin: 5px 0;
+      }
+      .product-card .button {
+        font-size: 12px;
+        padding: 6px 10px;
+      }
+      .modal-content {
+        padding: 15px;
+        max-width: 90%;
+      }
+      .modal-content img {
+        height: auto;
+        max-height: 200px; /* Adjusted for mobile */
+        object-fit: contain;
+      }
+      .modal-content h2 {
+        font-size: 18px;
+      }
+      .modal-content select, .modal-content input {
+        padding: 6px;
+        font-size: 14px;
+      }
+      .modal-content .button {
+        font-size: 12px;
+        padding: 6px 12px;
+      }
+      .admin-panel h2 {
+        font-size: 18px;
+      }
+      .admin-panel input {
+        width: 100%;
+        margin: 5px 0;
+      }
+      .admin-panel .button-group {
+        width: 150px;
+        gap: 3px;
+      }
+      .admin-panel .product-list div {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+      }
+      .admin-panel .product-list span {
+        font-size: 14px;
+      }
+      .admin-panel .button {
+        font-size: 12px;
+        padding: 6px 12px;
+      }
+      .cart-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
+      }
+      .cart-item span {
+        font-size: 14px;
+      }
+      .total {
+        font-size: 14px;
+      }
+      footer {
+        height: auto;
+        padding: 15px 0;
+      }
+      footer ul {
+        flex-direction: column;
+        gap: 10px;
+      }
+      footer ul li a {
+        font-size: 12px;
+      }
+      footer p {
+        font-size: 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Brand Name -->
+    <div class="brand">
+      <h1>Fancy</h1>
+    </div>
+
+    <!-- Navigation Header -->
+    <div class="nav">
+      <ul>
+        <li><a href="#">Brows</a></li>
+        <li><a href="#">Eyes</a></li>
+        <li><a href="#">Face</a></li>
+        <li><a href="#">Skin Care</a></li>
+        <li><a href="#">Body Care</a></li>
+        <li><a href="#">Lips</a></li>
+      </ul>
+      <div class="buttons">
+        <input type="text" placeholder="Search...">
+        <button class="button button-primary" onclick="toggleCart()">Cart (<span id="cart-count">0</span>)</button>
+        <button class="button button-green" onclick="toggleAdmin()">Admin</button>
+      </div>
+    </div>
+
+    <!-- Promotional Section with Image -->
+    <div class="promo">
+      <div class="discount">%25 off</div>
+    </div>
+
+    <header>
+    </header>
+
+    <div id="cart-modal" class="modal">
+      <div class="modal-content">
+        <h2>Cart</h2>
+        <div id="cart-items"></div>
+        <p id="cart-total" class="total">Total: $0.00</p>
+        <button class="button button-primary" onclick="checkout()">Checkout</button>
+        <button class="button button-secondary" onclick="toggleCart()">Close</button>
+      </div>
+    </div>
+
+    <div id="product-modal" class="modal">
+      <div class="modal-content">
+        <h2 id="modal-product-name"></h2>
+        <img id="modal-product-image" src="" alt="">
+        <p id="modal-product-price"></p>
+        <label for="modal-product-variant">Shade:</label>
+        <select id="modal-product-variant"></select>
+        <label for="modal-product-quantity">Quantity:</label>
+        <input type="number" id="modal-product-quantity" min="1" value="1">
+        <button class="button button-primary" onclick="addToCart()">Add to Cart</button>
+        <button class="button button-secondary" onclick="closeProductModal()">Close</button>
+      </div>
+    </div>
+
+    <div id="message-modal" class="modal">
+      <div class="modal-content">
+        <h2>Message</h2>
+        <p id="message-text"></p>
+        <button class="button button-secondary" onclick="closeMessageModal()">Close</button>
+      </div>
+    </div>
+
+    <div id="admin-panel" class="admin-panel">
+      <h2>Admin Panel</h2>
+      <div>
+        <input type="text" id="new-name" placeholder="Product Name">
+        <input type="number" id="new-price" placeholder="Price">
+        <input type="text" id="new-image" placeholder="Default Image URL">
+        <input type="text" id="new-variants" placeholder="Shades (comma-separated)">
+        <input type="text" id="new-variant-images" placeholder="Variant Images (comma-separated, same order as shades)">
+        <button class="button button-primary" id="add-product-btn" onclick="addProduct()">Add Product</button>
+        <button class="button button-update" id="update-product-btn" onclick="updateProduct()" style="display: none;">Update Product</button>
+        <button class="button button-secondary" id="cancel-update-btn" onclick="cancelUpdate()" style="display: none;">Cancel</button>
+      </div>
+      <div id="admin-product-list" class="product-list"></div>
+      <button class="button button-green" onclick="downloadJSON()">Download Updated JSON</button>
+    </div>
+
+    <div id="shop-section">
+      <div id="product-grid" class="product-grid"></div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+      <ul>
+        <li><a href="#">About Us</a></li>
+        <li><a href="#">Contact</a></li>
+        <li><a href="#">Privacy Policy</a></li>
+        <li><a href="#">Terms of Service</a></li>
+        <li><a href="#">FAQs</a></li>
+      </ul>
+      <p>&copy; 2025 Fancy Cosmetics. All rights reserved.</p>
+    </footer>
+  </div>
+
+  <script>
+    // Simulated JSON data for makeup products
+    let products = JSON.parse(localStorage.getItem('products')) || [
+      {
+        id: 1,
+        name: "Matte Lipstick",
+        price: 15.99,
+        image: "lipstick.png",
+        variants: ["Ruby Red", "Nude Pink", "Coral"],
+        variantImages: {
+          "Ruby Red": "lipss.png",
+          "Nude Pink": "nude pink.png",
+          "Coral": "corals.png"
+        }
+      },
+      {
+        id: 2,
+        name: "Liquid Foundation",
+        price: 29.99,
+        image: "foundation.png",
+        variants: ["Ivory", "Beige", "Tan"],
+        variantImages: {
+          "Ivory": "loreal.png",
+          "Beige": "begie.png",
+          "Tan": "tan.png"
+        }
+      },
+      {
+        id: 3,
+        name: "Eyeshadow Palette",
+        price: 39.99,
+        image: "eye shadow.png",
+        variants: ["Smokey", "Neutral", "Vibrant"],
+        variantImages: {
+          "Smokey": "smokey.png",
+          "Neutral": "neutral.png",
+          "Vibrant": "vibrant.png"
+        }
+      },
+      {
+        id: 4,
+        name: "Mascara",
+        price: 12.99,
+        image: "mascara.png",
+        variants: ["Black", "Brown", "Navy"],
+        variantImages: {
+          "Black": "blackmascara.png",
+          "Brown": "brownmascara.png",
+          "Navy": "navymascara.png"
+        }
+      },
+      {
+        id: 5,
+        name: "Blush Compact",
+        price: 19.99,
+        image: "blush compact.png",
+        variants: ["Peach Glow", "Rose Pink", "Coral Flush"],
+        variantImages: {
+          "Peach Glow": "peachglow.png",
+          "Rose Pink": "rosepink.png",
+          "Coral Flush": "coralblush.png"
+        }
+      },
+      {
+        id: 6,
+        name: "Eyeliner Pen",
+        price: 14.99,
+        image: "eyeliner.png",
+        variants: ["Jet Black", "Dark Brown", "Charcoal"],
+        variantImages: {
+          "Jet Black": "eyelinerblack.png",
+          "Dark Brown": "eyeliner darkbrown.png",
+          "Charcoal": "charcoaleyeliner.png"
+        }
+      },
+      {
+        id: 7,
+        name: "Highlighter Stick",
+        price: 22.99,
+        image: "lighter.png",
+        variants: ["Champagne", "Golden", "Pearl"],
+        variantImages: {
+          "Champagne": "lighter_champagne.png",
+          "Golden": "lighter_golden.png",
+          "Pearl": "lighter_pearl.png"
+        }
+      },
+      {
+        id: 8,
+        name: "Beauty Blender",
+        price: 9.99,
+        image: "blender.png",
+        variants: ["Pink", "Purple", "Black"],
+        variantImages: {
+          "Pink": "blender_pink.png",
+          "Purple": "blender_purple.png",
+          "Black": "blender_black.png"
+        }
+      },
+      {
+        id: 9,
+        name: "Nail Paint",
+        price: 7.99,
+        image: "nail.png",
+        variants: ["Crimson", "Nude", "Glitter"],
+        variantImages: {
+          "Crimson": "nail_crimson.png",
+          "Nude": "nail_nude.png",
+          "Glitter": "nail_glitter.png"
+        }
+      }
+    ];
+
+    let cart = JSON.parse(localStorage.getItem('cart')) || [];
+    let selectedProduct = null;
+    let selectedProductId = null;
+
+    // Initialize
+    renderProducts();
+    updateCartCount();
+    renderCart();
+
+    // Handle image load errors
+    document.getElementById('modal-product-image').onerror = function() {
+      this.src = 'https://via.placeholder.com/200?text=Image+Not+Found';
+      console.warn(`Failed to load image for product ${selectedProduct?.name || 'unknown'}. Using placeholder.`);
+    };
+
+    function renderProducts() {
+      const productGrid = document.getElementById('product-grid');
+      productGrid.innerHTML = '';
+      products.forEach(product => {
+        const card = document.createElement('div');
+        card.className = 'product-card';
+        card.innerHTML = `
+          <img src="${product.image}" alt="${product.name}">
+          <h3>${product.name}</h3>
+          <p>$${product.price.toFixed(2)}</p>
+          <button class="button button-primary" onclick="openProductModal(${product.id})">View Details</button>
+        `;
+        productGrid.appendChild(card);
+      });
+    }
+
+    function openProductModal(productId) {
+      selectedProduct = products.find(p => p.id === productId);
+      if (!selectedProduct) {
+        showMessageModal('Product not found!');
+        return;
+      }
+      document.getElementById('modal-product-name').textContent = selectedProduct.name;
+      const variantSelect = document.getElementById('modal-product-variant');
+      variantSelect.innerHTML = selectedProduct.variants.map(v => `<option value="${v}">${v}</option>`).join('');
+      document.getElementById('modal-product-price').textContent = `Price: $${selectedProduct.price.toFixed(2)}`;
+      document.getElementById('modal-product-quantity').value = 1;
+      const modalImage = document.getElementById('modal-product-image');
+      modalImage.classList.add('loading');
+      const initialVariant = selectedProduct.variants[0];
+      const initialImage = selectedProduct.variantImages?.[initialVariant] || selectedProduct.image || 'https://via.placeholder.com/200?text=Image+Not+Found';
+      modalImage.src = initialImage;
+      if (!selectedProduct.variantImages?.[initialVariant] && !selectedProduct.image) {
+        console.warn(`No image found for product ${selectedProduct.name} variant ${initialVariant} or default image`);
+      }
+      modalImage.onload = () => modalImage.classList.remove('loading');
+      document.getElementById('product-modal').classList.add('active');
+
+      // Add event listener for variant change
+      variantSelect.onchange = function() {
+        const selectedVariant = this.value;
+        modalImage.classList.add('loading');
+        const variantImage = selectedProduct.variantImages?.[selectedVariant] || selectedProduct.image || 'https://via.placeholder.com/200?text=Image+Not+Found';
+        modalImage.src = variantImage;
+        if (!selectedProduct.variantImages?.[selectedVariant] && !selectedProduct.image) {
+          console.warn(`No image found for product ${selectedProduct.name} variant ${selectedVariant} or default image`);
+        }
+        modalImage.onload = () => modalImage.classList.remove('loading');
+      };
+    }
+
+    function closeProductModal() {
+      document.getElementById('product-modal').classList.remove('active');
+      selectedProduct = null;
+      document.getElementById('modal-product-variant').onchange = null; // Clean up event listener
+    }
+
+    function showMessageModal(message) {
+      document.getElementById('message-text').textContent = message;
+      document.getElementById('message-modal').classList.add('active');
+    }
+
+    function closeMessageModal() {
+      document.getElementById('message-modal').classList.remove('active');
+    }
+
+    function addToCart() {
+      const variant = document.getElementById('modal-product-variant').value;
+      const quantity = parseInt(document.getElementById('modal-product-quantity').value);
+      cart.push({ ...selectedProduct, variant, quantity });
+      localStorage.setItem('cart', JSON.stringify(cart));
+      updateCartCount();
+      renderCart();
+      closeProductModal();
+    }
+
+    function toggleCart() {
+      const cartModal = document.getElementById('cart-modal');
+      cartModal.classList.toggle('active');
+      renderCart();
+    }
+
+    function renderCart() {
+      const cartItems = document.getElementById('cart-items');
+      cartItems.innerHTML = cart.length === 0 ? '<p>Cart is empty</p>' : '';
+      cart.forEach((item, index) => {
+        const div = document.createElement('div');
+        div.className = 'cart-item';
+        div.innerHTML = `
+          <span>${item.name} (${item.variant}, Qty: ${item.quantity})</span>
+          <span>$${(item.price * item.quantity).toFixed(2)}</span>
+          <button class="button button-danger" onclick="removeFromCart(${index})">Remove</button>
+        `;
+        cartItems.appendChild(div);
+      });
+      const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+      document.getElementById('cart-total').textContent = `Total: $${total.toFixed(2)}`;
+    }
+
+    function removeFromCart(index) {
+      cart.splice(index, 1);
+      localStorage.setItem('cart', JSON.stringify(cart));
+      updateCartCount();
+      renderCart();
+    }
+
+    function updateCartCount() {
+      document.getElementById('cart-count').textContent = cart.length;
+    }
+
+    function checkout() {
+      if (cart.length === 0) {
+        showMessageModal('Cart is empty!');
+        return;
+      }
+      showMessageModal('Order placed successfully!');
+      cart = [];
+      localStorage.setItem('cart', JSON.stringify(cart));
+      updateCartCount();
+      renderCart();
+      toggleCart();
+    }
+
+    function toggleAdmin() {
+      const adminPanel = document.getElementById('admin-panel');
+      const shopSection = document.getElementById('shop-section');
+      const adminButton = document.querySelector('button[onclick="toggleAdmin()"]');
+      const isAdminActive = adminPanel.classList.contains('active');
+      adminPanel.classList.toggle('active');
+      shopSection.classList.toggle('hidden');
+      adminButton.textContent = isAdminActive ? 'Admin' : 'Shop';
+      if (!isAdminActive) renderAdmin();
+    }
+
+    function renderAdmin() {
+      const productList = document.getElementById('admin-product-list');
+      productList.innerHTML = '';
+      products.forEach(product => {
+        const div = document.createElement('div');
+        div.innerHTML = `
+          <span>${product.name} - $${product.price.toFixed(2)}</span>
+          <div class="button-group">
+            <button class="button button-update" onclick="editProduct(${product.id})">Update</button>
+            <button class="button button-danger" onclick="deleteProduct(${product.id})">Delete</button>
+          </div>
+        `;
+        productList.appendChild(div);
+      });
+    }
+
+    function addProduct() {
+      const name = document.getElementById('new-name').value;
+      const price = parseFloat(document.getElementById('new-price').value);
+      const image = document.getElementById('new-image').value;
+      const variants = document.getElementById('new-variants').value.split(',').map(v => v.trim());
+      const variantImagesInput = document.getElementById('new-variant-images').value;
+      const variantImagesList = variantImagesInput.split(',').map(v => v.trim());
+      if (!name || !price || !image || !variants.length || variantImagesList.length !== variants.length) {
+        showMessageModal('Please fill all fields and provide an image for each variant!');
+        return;
+      }
+      const variantImages = {};
+      variants.forEach((variant, index) => {
+        variantImages[variant] = variantImagesList[index];
+      });
+      const product = { id: products.length + 1, name, price, image, variants, variantImages };
+      products.push(product);
+      localStorage.setItem('products', JSON.stringify(products));
+      renderProducts();
+      renderAdmin();
+      clearAdminForm();
+    }
+
+    function clearAdminForm() {
+      document.getElementById('new-name').value = '';
+      document.getElementById('new-price').value = '';
+      document.getElementById('new-image').value = '';
+      document.getElementById('new-variants').value = '';
+      document.getElementById('new-variant-images').value = '';
+      document.getElementById('add-product-btn').style.display = 'inline-block';
+      document.getElementById('update-product-btn').style.display = 'none';
+      document.getElementById('cancel-update-btn').style.display = 'none';
+      selectedProductId = null;
+    }
+
+    function editProduct(id) {
+      const product = products.find(p => p.id === id);
+      selectedProductId = id;
+      document.getElementById('new-name').value = product.name;
+      document.getElementById('new-price').value = product.price;
+      document.getElementById('new-image').value = product.image;
+      document.getElementById('new-variants').value = product.variants.join(', ');
+      document.getElementById('new-variant-images').value = product.variants.map(v => product.variantImages?.[v] || '').join(', ');
+      document.getElementById('add-product-btn').style.display = 'none';
+      document.getElementById('update-product-btn').style.display = 'inline-block';
+      document.getElementById('cancel-update-btn').style.display = 'inline-block';
+    }
+
+    function updateProduct() {
+      const name = document.getElementById('new-name').value;
+      const price = parseFloat(document.getElementById('new-price').value);
+      const image = document.getElementById('new-image').value;
+      const variants = document.getElementById('new-variants').value.split(',').map(v => v.trim());
+      const variantImagesInput = document.getElementById('new-variant-images').value;
+      const variantImagesList = variantImagesInput.split(',').map(v => v.trim());
+      if (!name || !price || !image || !variants.length || variantImagesList.length !== variants.length) {
+        showMessageModal('Please fill all fields and provide an image for each variant!');
+        return;
+      }
+      const variantImages = {};
+      variants.forEach((variant, index) => {
+        variantImages[variant] = variantImagesList[index];
+      });
+      products = products.map(p => p.id === selectedProductId ? { ...p, name, price, image, variants, variantImages } : p);
+      localStorage.setItem('products', JSON.stringify(products));
+      renderProducts();
+      renderAdmin();
+      clearAdminForm();
+    }
+
+    function cancelUpdate() {
+      clearAdminForm();
+    }
+
+    function deleteProduct(id) {
+      products = products.filter(p => p.id !== id);
+      localStorage.setItem('products', JSON.stringify(products));
+      renderProducts();
+      renderAdmin();
+    }
+
+    function downloadJSON() {
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(products, null, 2));
+      const downloadAnchor = document.createElement('a');
+      downloadAnchor.setAttribute('href', dataStr);
+      downloadAnchor.setAttribute('download', 'products.json');
+      downloadAnchor.click();
+    }
+  </script>
+</body>
+</html>
