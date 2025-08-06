@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>User Management Dashboard</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+  <div class="header">
+    <div class="header-content">
+      <img src="logo.png" alt="Logo" class="header-logo">
+      <div class="header-text">
+        <span>Norsk</span>
+        <span>Timeregistrering</span>
+      </div>
+      <input type="text" id="searchInput" placeholder="Search...">
+    </div>
+    <div class="user-info">
+      <img src="admin.png" alt="User">
+      <span>Luke Asote <br> Admin for Associations</span>
+    </div>
+  </div>
+  <div class="sidebar">
+    <ul>
+      <li class="active"><i class="fas fa-user"></i> Profile</li>
+      <li><i class="fas fa-users"></i> Users</li>
+      <li><i class="fas fa-tachometer-alt"></i> Control panel</li>
+      <li><i class="fas fa-tasks"></i> Projects</li>
+      <li><i class="fas fa-list"></i> Tasks</li>
+      <li><i class="fas fa-history"></i> Logs</li>
+      <li><i class="fas fa-comments"></i> Group chats</li>
+      <li><i class="fas fa-chart-bar"></i> Reports</li>
+    </ul>
+  </div>
+  <div class="content">
+    <div class="main-content">
+      <h1>User Management Dashboard</h1>
+      <div class="members-header">
+        <h2>Members</h2>
+        <div class="button-group">
+          <button id="addUserBtn">Add New User</button>
+          <button id="importMemberBtn">Import Member</button>
+          <button id="exportMemberBtn">Export Member</button>
+        </div>
+      </div>
+
+      <!-- Error Message -->
+      <div id="errorMessage" class="error"></div>
+
+      <!-- Add User Form -->
+      <div class="form-container">
+        <form id="userForm" class="user-form hidden">
+          <span class="close">&times;</span>
+          <input type="hidden" id="userId">
+          <input type="text" id="name" placeholder="Name" required>
+          <input type="text" id="job" placeholder="Job" required>
+          <input type="text" id="avatar" placeholder="Avatar URL (optional)">
+          <button type="submit">Save</button>
+          <button type="button" id="cancelBtn">Cancel</button>
+        </form>
+      </div>
+
+      <!-- Edit User Modal -->
+      <div id="editModal" class="modal hidden">
+        <div class="modal-content">
+          <span class="close">&times;</span>
+          <h2>Edit User</h2>
+          <form id="editUserForm" class="user-form">
+            <input type="hidden" id="editUserId">
+            <input type="text" id="editName" placeholder="Name" required>
+            <input type="text" id="editJob" placeholder="Job" required>
+            <input type="text" id="editAvatar" placeholder="Avatar URL (optional)">
+            <button type="submit">Save</button>
+            <button type="button" id="modalCancelBtn">Cancel</button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Success Modal -->
+      <div id="successModal" class="modal hidden">
+        <div class="modal-content">
+          <span class="close">&times;</span>
+          <div class="user-form">
+            <p id="successMessage"></p>
+            <button type="button" id="successOkBtn">OK</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Confirm Delete Modal -->
+      <div id="confirmDeleteModal" class="modal hidden">
+        <div class="modal-content">
+          <span class="close">&times;</span>
+          <div class="user-form">
+            <p>Are you sure to delete this user?</p>
+            <button type="button" id="confirmDeleteBtn">Confirm</button>
+            <button type="button" id="cancelDeleteBtn">Cancel</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="userTableContainer">
+        <div class="loader" id="loader"></div>
+        <table id="userTable">
+          <thead>
+            <tr>
+              <th>Photo</th>
+              <th>Member name</th>
+              <th>Mobile</th>
+              <th>Email</th>
+              <th>Status</th>
+              <th>Operation</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+
+      <div class="pagination">
+        <button id="prevBtn">Previous</button>
+        <span id="pageNumber">Page 1</span>
+        <button id="nextBtn">Next</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

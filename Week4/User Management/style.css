@@ -1,0 +1,494 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background: #f3f3f3;
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  background: #5a2e8d;
+  color: white;
+  padding: 5px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 0;
+  width: 100%;
+  position: fixed;
+  top: 0;
+  z-index: 1000;
+  height: 40px;
+}
+
+.header-content {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  flex-grow: 1;
+  gap: 20px;
+}
+
+.header-logo {
+  height: 30px;
+  margin-right: 10px;
+}
+
+.header-text {
+  display: flex;
+  flex-direction: column;
+  font-size: 16px;
+  line-height: 1.2;
+  white-space: nowrap;
+  gap: 5px; /* Increased vertical space between "Norsk" and "Timeregistrering" */
+}
+
+.header-text span {
+  color: white;
+}
+
+.header input {
+  flex-grow: 0;
+  padding: 5px;
+  border: none;
+  border-radius: 4px;
+  margin: 0;
+  height: 25px;
+  width: 500px;
+  max-width: 60%;
+  box-sizing: border-box;
+}
+
+.header .user-info {
+  display: flex;
+  align-items: center;
+  margin-left: auto;
+  margin-right: 15px;
+  flex-shrink: 0;
+}
+
+.header .user-info img {
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  margin-right: 5px;
+}
+
+.header .user-info span {
+  font-size: 12px;
+  text-align: left;
+}
+
+.sidebar {
+  background: #8e6cb5;
+  color: white;
+  width: 250px;
+  height: calc(100vh - 40px);
+  padding: 20px 0;
+  margin-top: 40px;
+  position: fixed;
+  top: 0;
+  overflow-y: auto;
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sidebar ul li {
+  padding: 15px 20px;
+  cursor: pointer;
+}
+
+.sidebar ul li:hover {
+  background: #7a5aa1;
+}
+
+.sidebar ul li.active {
+  background: #7a5aa1;
+}
+
+.sidebar ul li i {
+  margin-right: 10px;
+}
+
+.content {
+  margin-left: 250px;
+  padding: 20px;
+  margin-top: 40px;
+  width: calc(100% - 250px);
+}
+
+.main-content {
+  background: white;
+  padding: 40px;
+  border-radius: 0 0 5px 5px;
+  margin-top: -20px;
+  margin-left: -20px;
+  min-height: calc(100vh - 40px);
+}
+
+.main-content h1 {
+  font-size: 24px;
+  margin: 0 0 30px 0;
+}
+
+.members-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px; /* Reduced from 30px to 10px for less space */
+}
+
+.members-header h2 {
+  font-size: 18px;
+  margin: 0;
+  margin-right: 20px;
+  display: inline-block;
+}
+
+.button-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.button-group button {
+  padding: 5px 10px;
+  cursor: pointer;
+  border: none;
+  border-radius: 4px;
+  background: #5a2e8d;
+  color: white;
+}
+
+.button-group button:hover {
+  background: #4a2573;
+}
+
+#userTable {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px; /* Reduced from 30px to 10px for less space */
+}
+
+#userTable thead tr {
+  background: #8e6cb5;
+  color: white;
+}
+
+#userTable tr {
+  border-bottom: 1px solid #e0e0e0;
+}
+
+#userTable th, #userTable td {
+  padding: 15px;
+  text-align: center;
+  border: none;
+}
+
+#userTable th {
+  background: #8e6cb5;
+}
+
+#userTable td img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+
+button {
+  padding: 5px 10px;
+  margin: 2px;
+  cursor: pointer;
+  border: none;
+  border-radius: 4px;
+}
+
+button.active {
+  background: #2ecc71;
+  color: white;
+}
+
+button.inactive {
+  background: #e74c3c;
+  color: white;
+}
+
+button.login {
+  background: #5a2e8d;
+  color: white;
+}
+
+button.login:hover {
+  background: #4a2573;
+}
+
+button.logout {
+  background: #e74c3c;
+  color: white;
+}
+
+button:hover {
+  opacity: 0.9;
+}
+
+.action-icon {
+  color: #5a2e8d;
+  font-size: 16px;
+  margin: 0 5px;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.action-icon:hover {
+  color: #4a2573;
+}
+
+.error {
+  color: red;
+  text-align: center;
+  margin: 10px 0;
+}
+
+.loader {
+  border: 6px solid #f3f3f3;
+  border-top: 6px solid #8e6cb5;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  margin: auto;
+  display: none;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.hidden {
+  display: none !important;
+}
+
+.form-container {
+  display: flex;
+  justify-content: center;
+}
+
+.user-form {
+  background: #8e6cb5;
+  color: white;
+  padding: 15px;
+  border-radius: 6px;
+  margin: 10px 0;
+  max-width: 400px;
+  border: 1px solid #e0e0e0;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  position: relative;
+}
+
+.user-form .close {
+  position: absolute;
+  top: 5px;
+  right: 15px;
+  font-size: 20px;
+  cursor: pointer;
+  color: #5a2e8d;
+  transition: color 0.2s ease;
+}
+
+.user-form .close:hover {
+  color: #4a2573;
+}
+
+.user-form input[type="text"] {
+  background: #f9f9f9;
+  color: #333;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 8px;
+  margin: 10px 0;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.user-form p {
+  margin: 10px 0;
+  font-size: 16px;
+  color: white;
+  text-align: center;
+}
+
+.user-form button {
+  background: #4a2573;
+  color: white;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 4px;
+  margin-right: 10px;
+}
+
+.user-form button:hover {
+  background: #3a1c5b;
+}
+
+.user-form button#cancelBtn,
+.user-form button#modalCancelBtn,
+.user-form button#successOkBtn,
+.user-form button#cancelDeleteBtn {
+  background: #e74c3c;
+}
+
+.user-form button#cancelBtn:hover,
+.user-form button#modalCancelBtn:hover,
+.user-form button#successOkBtn:hover,
+.user-form button#cancelDeleteBtn:hover {
+  background: #c0392b;
+}
+
+.user-form button#confirmDeleteBtn {
+  background: #4a2573;
+}
+
+.user-form button#confirmDeleteBtn:hover {
+  background: #3a1c5b;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px; /* Keep as is, or adjust if needed */
+}
+
+.pagination button {
+  background: #5a2e8d;
+  color: white;
+  padding: 5px 10px;
+  margin: 0 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.pagination button:hover:not(:disabled) {
+  background: #4a2573;
+}
+
+.pagination button:disabled {
+  background: #cccccc;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.modal:not(.hidden) {
+  opacity: 1;
+  visibility: visible;
+}
+
+.modal-content {
+  background: #f9f9f9;
+  padding: 20px;
+  border-radius: 8px;
+  width: 100%;
+  max-width: 400px;
+  position: relative;
+  transform: translateY(-20px);
+  transition: transform 0.3s ease;
+  border: 1px solid #e0e0e0;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.modal:not(.hidden) .modal-content {
+  transform: translateY(0);
+}
+
+.modal-content h2 {
+  margin-top: 0;
+  color: #5a2e8d;
+  font-size: 18px;
+}
+
+.close {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  font-size: 20px;
+  cursor: pointer;
+  color: #5a2e8d;
+  transition: color 0.2s ease;
+}
+
+.close:hover {
+  color: #4a2573;
+}
+
+.modal-content .user-form {
+  background: #8e6cb5;
+  color: white;
+  padding: 15px;
+  border-radius: 6px;
+  margin: 10px 0;
+}
+
+.modal-content input[type="text"] {
+  background: #f9f9f9;
+  color: #333;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 8px;
+  margin: 10px 0;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.modal-content button {
+  background: #4a2573;
+  color: white;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 4px;
+  margin-right: 10px;
+}
+
+.modal-content button:hover {
+  background: #3a1c5b;
+}
+
+.modal-content button#modalCancelBtn {
+  background: #e74c3c;
+}
+
+.modal-content button#modalCancelBtn:hover {
+  background: #c0392b;
+}
+/* Center buttons inside modal .user-form */
+.modal .user-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.modal .user-form button {
+  margin: 5px 0;
+  width: 30%; /* Optional: makes buttons look neater when centered */
+}
