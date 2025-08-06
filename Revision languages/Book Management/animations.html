@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .box {
+  width: 200px;
+  height: 100px;
+  background-color: coral;
+  color: white;
+  text-align: center;
+  line-height: 100px;
+  animation: moveRight 2s ease-in-out forwards;
+}
+      .fade {
+  opacity: 0;
+  animation: fadeIn 2s forwards;
+}
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+  }
+}
+@keyframes moveRight {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(300px); }
+}
+
+</style>
+</head>
+<body>
+    <div class="box">Animated Box</div>
+  <div class="fade">Hello, I fade in!</div>
+</body>
+</html>
+

@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+<head>
+ <style>
+  body {
+    margin: 0;
+    padding: 0;
+    background: url('buisness.png') no-repeat center center/cover;
+    background-attachment: fixed;
+    font-family: Arial, sans-serif;
+  }
+
+  .container {
+    width: 100%;
+    margin: 0 auto;
+    padding: 0;
+    border: 2px solid #ccc;
+    border-radius: 10px;
+    overflow: hidden;
+    background-color: rgba(255, 255, 255, 0.7);
+  }
+
+  .navbar {
+    background-color: #333;
+    color: white;
+    padding: 25px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .navbar a {
+    color: white;
+    text-decoration: none;
+    margin-left: 20px;
+  }
+
+  .navbar a:hover {
+    text-decoration: underline;
+  }
+
+  .content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px;
+    gap: 40px;
+  }
+
+  .left-box,
+  .right-box {
+    flex: 1;
+    padding: 20px;
+    box-sizing: border-box;
+    height: 100%;
+  }
+
+  /* ✅ Added animation to .left-box */
+  .left-box {
+    animation: slideUpFade 1.5s ease-in-out forwards;
+    opacity: 0; /* starts hidden */
+    transform: translateY(40px); /* starts slightly down */
+  }
+
+  .left-box h1 {
+    font-size: 32px;
+    margin-bottom: 20px;
+  }
+
+  .left-box p {
+    font-size: 16px;
+    margin-bottom: 20px;
+    line-height: 1.6;
+  }
+
+  .left-box button {
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #333;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+
+  .left-box button:hover {
+    background-color: #555;
+  }
+
+  .right-box {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .right-box img {
+    width: 100%;
+    max-width: 400px;
+    height: auto;
+    border-radius: 10px;
+    animation: zoomInFade 1.5s ease-in-out forwards;
+    opacity: 0;
+    transform: scale(0.8);
+    display: block;
+    margin: 0 auto;
+  }
+
+  /* ✅ Keyframes for text animation */
+  @keyframes slideUpFade {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes zoomInFade {
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+  iframe {
+  border-radius: 8px;
+  border: 2px solid #888;
+  margin-top: 20px;
+}
+</style>
+
+</head>
+<body>
+
+  <div class="container">
+
+    <div class="navbar">
+      <div class="logo">MySite</div>
+      <div>
+        <a href="#">Home</a>
+        <a href="#">About</a>
+        <a href="#">Services</a>
+        <a href="#">Contact</a>
+      </div>
+    </div>
+
+    <div class="content">
+
+      <div class="left-box">
+        <h1>Welcome to My Website</h1>
+        <p>
+          This is a simple layout with text on the left and an image on the right. To enhance the visual appeal and create a more dynamic user experience, I implemented a smooth animation effect on the image using CSS keyframes. When the page loads, the image on the right doesn't just appear instantly — instead, it fades in while gently zooming into its original size. This is achieved by starting the image at 80% scale with zero opacity, and then gradually transitioning it to full size and full visibility. The animation runs over 1.5 seconds, creating a clean, elegant entrance that draws attention to the image in a subtle yet effective way. Such animations not only make the interface feel more interactive and modern but also help guide the viewer's focus naturally across the layout. Adding movement to static elements can significantly improve user engagement and the overall feel of a website.
+        </p>
+        <button>Learn More</button>
+         <iframe width="560" height="315"
+  src="https://www.youtube.com/embed/tgbNymZ7vqY"
+  frameborder="0"
+  allowfullscreen>
+</iframe>
+      </div>
+
+      <div class="right-box">
+        <img src="sana1.png" alt="Sample Image">
+      </div>
+
+    </div>
+
+  </div>
+
+</body>
+</html>
